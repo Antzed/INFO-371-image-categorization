@@ -12,7 +12,7 @@ import sys
 
 ## Define image properties:
 imgDir = "./data/"
-targetWidth, targetHeight, channels = 32, 32, 1
+targetWidth, targetHeight, channels = 256, 256, 1
 imageSize = (targetWidth, targetHeight)
 
 print("Load images from", imgDir)
@@ -21,8 +21,9 @@ print("Load images from", imgDir)
 filenames = os.listdir(os.path.join(imgDir, "train"))
 print(len(filenames), "images found")
 trainingResults = pd.DataFrame({
-    'filename':filenames,
-    'category':pd.Series(filenames).str[:2]
+    'filename': filenames,
+    'category': np.where(pd.Series(filenames).str.contains('EN'), 'EN',
+                         np.where(pd.Series(filenames).str.contains('ZN'), 'ZN', 'Unknown'))
 })
 print("data files:")
 print(trainingResults.sample(5))
@@ -101,7 +102,7 @@ label_map = trainingGenerator.class_indices
 ## Model Training:
 history = model.fit(
     trainingGenerator,
-    epochs = 10,
+    epochs = 1,
 )
 
 ## Validation data preparation:
@@ -110,7 +111,9 @@ fNames = os.listdir(validationDir)
 print(len(fNames), "validation images")
 validationResults = pd.DataFrame({
     'filename': fNames,
-    'category': pd.Series(fNames).str[:2]
+    'category': np.where(pd.Series(fNames).str.contains('EN'), 'EN',
+                np.where(pd.Series(fNames).str.contains('ZN'), 'ZN',
+                np.where(pd.Series(fNames).str.contains('DA'), 'DA', 'Unknown')))
 })
 print(validationResults.shape[0], "validation files read from", validationDir)
 validationGenerator = ImageDataGenerator(rescale=1./255).\
@@ -163,6 +166,9 @@ index = 5
 correctResults = validationResults[validationResults.predicted == validationResults.category]
 rows = np.random.choice(correctResults.index,
                         min(4, correctResults.shape[0]), replace=False)
+print("Example correct results (validation data)")
+print(correctResults.sample(min(10, correctResults.shape[0])))
+
 for row in rows:
     filename = correctResults.loc[row, 'filename']
     predicted = correctResults.loc[row, 'predicted']
