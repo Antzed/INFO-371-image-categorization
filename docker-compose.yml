@@ -6,6 +6,7 @@ services:
       - .:/usr/src/app
       - ./data:/usr/src/app/data
       - ./image-categorization.py:/usr/src/app/image-categorization.py
+      - ./output:/usr/src/app/output
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     deploy:

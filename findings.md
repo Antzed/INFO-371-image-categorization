@@ -1,5 +1,18 @@
 # findings
 
+## preparing the environment
+
+In order to get the best result, I decided to run the network training on my laptop. The specs of my laptop is:
+
+|hardware type| hardware name|
+|---|---|
+|CPU | 11 gen i7-11800H @ 2.3GHz|
+| GPU | Nvidia Geforce RTX 3070 laptop GPU|
+
+I decided to use docker. This is way i can skip the process of figuring out which different python packages I need to install.
+
+I also allowed GPU processing, which will speed up the training process.
+
 ## Preparing the data
 
 to prepare the data, I first get extracted the data and put them in in here a file structure like this:
@@ -63,3 +76,26 @@ validationResults = pd.DataFrame({
                 np.where(pd.Series(fNames).str.contains('DA'), 'DA', 'Unknown')))
 })
 ```
+
+Finally, I changed the code defining image properties:
+
+```python
+targetWidth, targetHeight, channels = 256, 256, 1
+```
+
+Afterward the code runs. From the 1000 EN and ZN images, I get a validation accuracy of 0.89. This is with a network of (64, 128, 128, 128), kernal size 3, stride 1, and 10 epochs.
+
+the confusion matrix:
+
+predicted category |   EN  | ZN|
+|---|---|---|
+|DA         | 49    |1|
+|EN   |       221  |   4 |
+|ZN      |      1  | 224 |
+
+
+## Test language
+
+Now let play with this network.
+
+The first thing that needs to be done is increase the sample size. Hence I will take 5000 image from each languages(EN, ZN)

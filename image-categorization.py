@@ -23,7 +23,7 @@ print(len(filenames), "images found")
 trainingResults = pd.DataFrame({
     'filename': filenames,
     'category': np.where(pd.Series(filenames).str.contains('EN'), 'EN',
-                         np.where(pd.Series(filenames).str.contains('ZN'), 'ZN', 'Unknown'))
+                np.where(pd.Series(filenames).str.contains('ZN'), 'ZN', 'Unknown'))
 })
 print("data files:")
 print(trainingResults.sample(5))
@@ -102,7 +102,7 @@ label_map = trainingGenerator.class_indices
 ## Model Training:
 history = model.fit(
     trainingGenerator,
-    epochs = 1,
+    epochs = 10,
 )
 
 ## Validation data preparation:
@@ -178,4 +178,8 @@ for row in rows:
     plt.xlabel(filename + " ({})".format(predicted))
     index += 1
 plt.tight_layout()
-plt.show()
+# plt.show()
+
+# Save the figure to a file instead of displaying it
+plt.savefig('./output/classification_results.png', dpi=300)
+plt.close()
