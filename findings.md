@@ -52,3 +52,14 @@ trainingResults = pd.DataFrame({
                          np.where(pd.Series(filenames).str.contains('ZN'), 'ZN', 'Unknown'))
 })
 ```
+
+I also applied the same logic in the later validation dataframe:
+
+```python
+validationResults = pd.DataFrame({
+    'filename': fNames,
+    'category': np.where(pd.Series(fNames).str.contains('EN'), 'EN',
+                np.where(pd.Series(fNames).str.contains('ZN'), 'ZN',
+                np.where(pd.Series(fNames).str.contains('DA'), 'DA', 'Unknown')))
+})
+```
