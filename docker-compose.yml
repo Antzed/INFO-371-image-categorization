@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  deep_learning:
+    build: .
+    volumes:
+      - .:/usr/src/app
+      - ./data:/usr/src/app/data
+      - ./image-categorization.py:/usr/src/app/image-categorization.py
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            capabilities: [gpu]
