@@ -22,8 +22,9 @@ filenames = os.listdir(os.path.join(imgDir, "train"))
 print(len(filenames), "images found")
 trainingResults = pd.DataFrame({
     'filename': filenames,
-    'category': np.where(pd.Series(filenames).str.contains('EN'), 'EN',
-                np.where(pd.Series(filenames).str.contains('ZN'), 'ZN', 'Unknown'))
+    'category': np.where(pd.Series(filenames).str.contains('_EN-'), 'EN',
+                np.where(pd.Series(filenames).str.contains('_ZN-'), 'ZN',
+                np.where(pd.Series(filenames).str.contains('_TH-'), 'TH', 'Unknown')))
 })
 print("data files:")
 print(trainingResults.sample(5))
@@ -111,10 +112,14 @@ fNames = os.listdir(validationDir)
 print(len(fNames), "validation images")
 validationResults = pd.DataFrame({
     'filename': fNames,
-    'category': np.where(pd.Series(fNames).str.contains('EN'), 'EN',
-                np.where(pd.Series(fNames).str.contains('ZN'), 'ZN',
-                np.where(pd.Series(fNames).str.contains('DA'), 'DA', 'Unknown')))
+    'category': np.where(pd.Series(fNames).str.contains('_EN-'), 'EN',
+                np.where(pd.Series(fNames).str.contains('_ZN-'), 'ZN',
+                np.where(pd.Series(fNames).str.contains('_TH-'), 'TH', 'Unknown')))
 })
+# print the differentr categories in validationResults
+
+print("Validation data categories:\n", validationResults.category.nunique())
+
 print(validationResults.shape[0], "validation files read from", validationDir)
 validationGenerator = ImageDataGenerator(rescale=1./255).\
     flow_from_dataframe(validationResults,
