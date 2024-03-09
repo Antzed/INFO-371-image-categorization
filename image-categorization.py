@@ -23,8 +23,8 @@ print(len(filenames), "images found")
 trainingResults = pd.DataFrame({
     'filename': filenames,
     'category': np.where(pd.Series(filenames).str.contains('_EN-'), 'EN',
-                np.where(pd.Series(filenames).str.contains('_ZN-'), 'ZN',
-                np.where(pd.Series(filenames).str.contains('_TH-'), 'TH', 'Unknown')))
+                # np.where(pd.Series(filenames).str.contains('_ZN-'), 'ZN',
+                np.where(pd.Series(filenames).str.contains('_DA-'), 'DA', 'Unknown'))
 })
 print("data files:")
 print(trainingResults.sample(5))
@@ -51,20 +51,20 @@ model.add(BatchNormalization())
 model.add(MaxPooling2D(pool_size=2))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(128,
-                 kernel_size=3,
-                 kernel_initializer = initializers.HeNormal(),
-                 activation='relu'))
-model.add(BatchNormalization())
-model.add(MaxPooling2D(pool_size=2))
-model.add(Dropout(0.25))
+# model.add(Conv2D(128,
+#                  kernel_size=3,
+#                  kernel_initializer = initializers.HeNormal(),
+#                  activation='relu'))
+# model.add(BatchNormalization())
+# model.add(MaxPooling2D(pool_size=2))
+# model.add(Dropout(0.25))
 
-model.add(Flatten())
-model.add(Dense(128,
-                kernel_initializer = initializers.HeNormal(),
-                activation='relu'))
-model.add(BatchNormalization())
-model.add(Dropout(0.25))
+# model.add(Flatten())
+# model.add(Dense(128,
+#                 kernel_initializer = initializers.HeNormal(),
+#                 activation='relu'))
+# model.add(BatchNormalization())
+# model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(128,
@@ -113,8 +113,8 @@ print(len(fNames), "validation images")
 validationResults = pd.DataFrame({
     'filename': fNames,
     'category': np.where(pd.Series(fNames).str.contains('_EN-'), 'EN',
-                np.where(pd.Series(fNames).str.contains('_ZN-'), 'ZN',
-                np.where(pd.Series(fNames).str.contains('_TH-'), 'TH', 'Unknown')))
+                # np.where(pd.Series(fNames).str.contains('_ZN-'), 'ZN',
+                np.where(pd.Series(fNames).str.contains('_DA-'), 'DA', 'Unknown'))
 })
 # print the differentr categories in validationResults
 
