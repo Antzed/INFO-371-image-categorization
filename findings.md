@@ -54,6 +54,28 @@ find . -type f -name "*_ZN-*" | shuf -n 225 | xargs -I {} cp {} ../validation
 find . -type f -name "*_DA-*" | shuf -n 50 | xargs -I {} cp {} ../validation
 ```
 
+## What the code does
+
+### Intro
+For this project, we processed a project to construct, train, and assess a convolutional neural network (CNN) model to categorize photographs according to the type of written text they include, which are DA: Danish, EN: English, RU: Russian, TH: Thai, ZN: Chinese. This project is a component of a larger challenge to use deep learning methods for picture identification, with a focus on language recognition of text images. To well understand the code we gave, I would like to separate them into a few parts to explain:
+
+### Creating Model:
+After downloading and testing the dataset, the first part we did was to create the model. We used a ‘Sequential’ model from Keras, which works well with a layer stack in which there is precisely one input tensor and one output tensor for each layer. In this model architecture, two layers played an important role. 
+
+To prevent overfitting, a 2D convolutional layer (Conv2D) with ReLU activation is followed by batch normalization, max pooling, and dropout. It performs a convolution operation for the upcoming data working. This entails calculating the dot product between the filter weights and the input pixels each filter covers at each point when it is slid across the input image (both horizontally and vertically). In our project, we can change the number of parameters by changing the number of filters (or kernels) used in the convolution operation and the kernel_size (the size of the filter matrix). Also, we can change the clarity of the image by changing the stride size. When we increased the stride size, it would essentially reduce the resolution of the input text image in the feature map output. Conversely, when we decrease the stride size, it expands the feature map's spatial dimensions upon output. This makes it possible to analyze the image in greater depth and capture the image's finer details.
+
+The two ‘Dense’ layers are also important for creating the model, the first ‘Dense’ layer is to interpret the feature. The ‘kernel_initializer = initializers.HeNormal()’ argument specifies the initialization method for the weights. Also, when we change the units of the Dense, it would impact the capacity and performance of the neural network. For example, if we reduce the number of Denser units, it will help mitigate overfitting when the model is complex. The second ‘Dense’ layer is for classification. It intended to assign each image to a specific linguistic category. This layer has the same number of neurons as the number of language categories we are attempting to predict.
+
+### Training and validation data generator & Model Training:
+For this part, we used the ‘ImageDataGenerator’ function, which is a technique to increase the diversity of the training dataset without explicitly increasing the number of images. One important finding for this part is to change the size of the epoch, which would impact both performance metrics and the risk of overfitting or underfitting. When we increase the size of the epoch, it will lead to higher accuracy on the training dataset. However, it will also increase the possibility of overfitting. When we decrease the size of the epoch, it will increase the possibility of underfitting, but it will shorten the training time, which will make the process more efficient. The findings below clearly show this. 
+
+###	Validation data preparation & Categorical prediction:
+For this part, we made a validation process to categorize data for different languages and made categorical predictions. Filenames and the associated categories are used to build a data frame called ‘validationResults’. The existence of particular substrings (EN for English, DA for Danish, and others designated as Unknown) in the filenames determines the category. After that, we used the ‘ImageDataGenerator’ function again to create an instance for the validation data with only ‘rescale=1./255’ applied to normalize the image pixel values. After that, we add the predicted category indices to the data frame and get the predicted probability array shape. In comparison with the actual categories, we got the confusion matrix and validation accuracy at the end of this part. Also, we can get the wrong results in validation data.
+
+### Visualization:
+As the last part of our project, to visualize the comparisons we have derived, we have chosen to present the four correct outputs and four wrong outputs to show the differences, which helps point out any persistent biases or flaws in the model and in directing future enhancements to the training procedure, data preparation, or model design.
+
+
 ## Getting the code to work
 
 I then copy the `square-circle-cross` code from the lab and updated the code so that the script will map the training data based on the language:
@@ -216,4 +238,5 @@ Now we want to try to make the model differentiate between EN and DA
 Since we have the GPU, we decided to just continue with using all of the EN and DA images in the data set.
 
 ### attempt 9
+
 
