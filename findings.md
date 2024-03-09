@@ -157,4 +157,63 @@ The result produced a validation accuracy is 0.985 with a training time of rough
 This shows that it was not an equal trade between the increase in training sample and increase in strides. The quality of the model decreased with the increase of strides from 1 to 2.
 
 ## Adding more language.
+### attempt 4
+
+So for attempt 4, we added one language - thai data to train our model. And we yielded 63% validation accuracy for three languages.
+
+Here is the confusion matrix: 
+|matrix predicted category | EN | TH |   ZN|
+|---|---|---|---|          
+|EN   |      2037 |  6   |  7|
+|TH        |  395 |  9 | 1495|
+|ZN    |        1  | 0 | 1305|
+
+Therefore, we found that as the complexity of the data increased from 2 types to 3 types, the accuracy took hit when the networks remain to be the same.
+
+### attempt 5
+
+In order to increasing the accuracy of the model, we attempted to add a dense layer with 128 nodes. However, we found that the validation accuracy remains similar around 63.8%. We were wondering why adding a dense layer does not work. Our speculation was overfitting or diminishing returns.
+
+Here is the comfusion matrix:
+
+|matrix predicted category|  EN | TH |   ZN|
+|---|---|---|---|           
+|EN   |      2049   |  1|0|
+|TH     |    1830  |  69|0|
+|ZN |           3 | 1303|0|
+
+### attempt 6
+
+To keep increasing the accuracy of the model, we added other convolution layer with 128 nodes and MaxPooling2D. This does increased the validation accuracy to 73.7% and decreased our parameter.
+
+confusion matrix (validation)
+predicted    EN   TH    ZN
+category                  
+EN         2049    0     1
+TH            3  524  1372
+ZN            7    0  1299
+
+### attempt 7
+
+In order to keep simplifing the model, we would like to keep reducing the number of parameters. As a result, we decided to remove one Dense layer and replace it by a Average Pooling Layer. 
+
+The number of parameters decrease significantly from 63073411 to 15821444. However, the accuracy dropped to 38.1%, which is not acceptable. 
+
+confusion matrix (validation)
+predicted  EN   TH  Unknown    ZN
+category
+EN          0    0     1478   572
+TH         58  193     1205   443
+Unknown     4    0     1676  1032
+ZN          4    8      123  1171
+
+## EN vs DA
+
+Now we want to try to make the model differentiate between EN and DA
+
+### attempt 8
+
+Since we have the GPU, we decided to just continue with using all of the EN and DA images in the data set.
+
+### attempt 9
 
