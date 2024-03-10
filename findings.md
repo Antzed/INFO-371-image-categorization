@@ -57,7 +57,7 @@ find . -type f -name "*_DA-*" | shuf -n 50 | xargs -I {} cp {} ../validation
 ## What the code does
 
 ### Intro
-For this project, we processed a project to construct, train, and assess a convolutional neural network (CNN) model to categorize photographs according to the type of written text they include, which are DA: Danish, EN: English, RU: Russian, TH: Thai, ZN: Chinese. This project is a component of a larger challenge to use deep learning methods for picture identification, with a focus on language recognition of text images. To well understand the code we gave, I would like to separate them into a few parts to explain:
+For this project, we processed a project to construct, train, and assess a convolution neural network (CNN) model to categorize photographs according to the type of written text they include, which are DA: Danish, EN: English, RU: Russian, TH: Thai, ZN: Chinese. This project is a component of a larger challenge to use deep learning methods for picture identification, with a focus on language recognition of text images. To well understand the code we gave, I would like to separate them into a few parts to explain:
 
 ### Creating Model:
 After downloading and testing the dataset, the first part we did was to create the model. We used a ‘Sequential’ model from Keras, which works well with a layer stack in which there is precisely one input tensor and one output tensor for each layer. In this model architecture, two layers played an important role. 
@@ -217,17 +217,15 @@ ZN            7    0  1299
 
 ### attempt 7
 
-In order to keep simplifing the model, we would like to keep reducing the number of parameters. As a result, we decided to remove one Dense layer and replace it by a Average Pooling Layer. 
+In order to keep simplifying the model, we would like to keep reducing the number of parameters. As a result, we decided to remove one Dense layer and replace it by a Average Pooling Layer. 
 
-The number of parameters decrease significantly from 63073411 to 15821444. However, the accuracy dropped to 38.1%, which is not acceptable. 
+The number of parameters decrease significantly from 63073411 to 15821444. However, the training time shot up to a staggering 1 hour and 40 minutes, and validation accuracy was only at 0.68, which is quite low.
 
-confusion matrix (validation)
-predicted  EN   TH  Unknown    ZN
-category
-EN          0    0     1478   572
-TH         58  193     1205   443
-Unknown     4    0     1676  1032
-ZN          4    8      123  1171
+|matrix predicted category|  EN | TH |   ZN|
+|---|---|---|---|    
+|EN|         2033|    5|    12|
+|TH         |1574  |241    |84|
+|ZN|            3|   21|  1282|
 
 ## EN vs DA
 
@@ -237,6 +235,35 @@ Now we want to try to make the model differentiate between EN and DA
 
 Since we have the GPU, we decided to just continue with using all of the EN and DA images in the data set.
 
+From before we found out that we can get a somewhat decent validation score by just using two hidden layers, sp we decided to first try that with classifying EN and DA images.
+
+So with this attempt, we ran the training  for about 13 minutes, which is relatively fast.
+
+And we get the validation score of 0.84. This was lower when we tried the same method on classifying EN image to ZN.
+
+The confusion matrix look like this:
+
+confusion matrix (validation)
+|matrix predicted category|  DA | EN |
+|---|---|---|
+|DA|         808|   211|
+|EN         |274  |1776|
+
 ### attempt 9
 
+Finally, we tried adding one more conv2d Layer since previous attempt shows that adding both the conv2d layer and dense layer result in super long training time.
+
+So for this attempt we finished the training in 12 minute got the validation score of 0.65. This was surprising because we thought the added complexity should have increased the validation accuracy.
+
+predicted    DA   EN
+|predicted category|  DA | EN |
+|---|---|---|          
+|DA |       1019  |  0|
+EN     |    1064  |986|
+
+From the graphing we can see that a lot of English images was recognized  as Danish. There were no distinct characteristic of those wrongly categorized images that can explain why this happens. This once gain prove the difficulty of separating English and Danish.
+
+## Conclusion
+
+So overall, we can see that separating EN and ZN images are fairy easy. This is mostly likely because Chinese is a hieroglyphic language and all of its characters resemble the shape of a square. This square-like feature distinguish itselves from language like English, which relies entirely on the 26 alphbetical letters
 
