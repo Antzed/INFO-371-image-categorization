@@ -134,7 +134,7 @@ Here is the confusion matrix for this attempt:
 |EN         |1000    |0|
 |ZN|            1|999|
 
-we can see that we identified one chinese image wrong. If we print it out, we can see that it is becuase that particlar image do not have many feature points to begin with. Most of the space in the image is empty. The chinese characters shown on there has been cut in half.
+we can see that we identified one chinese image wrong. If we print it out, we can see that it is because that particular image do not have many feature points to begin with. Most of the space in the image is empty. The chinese characters shown on there has been cut in half.
 
 ![attempt1](./output/classification_results_attempt1.png)
 The first image on the top is the wrongly predicted images.
@@ -192,13 +192,15 @@ Here is the confusion matrix:
 
 Therefore, we found that as the complexity of the data increased from 2 types to 3 types, the accuracy took hit when the networks remain to be the same.
 
+![attempt4](./output/classification_results_attempt4.png)
+
 ### attempt 5
 
 In order to increasing the accuracy of the model, we attempted to add a dense layer with 128 nodes. However, we found that the validation accuracy remains similar around 63.8%. We were wondering why adding a dense layer does not work. Our speculation was overfitting or diminishing returns.
 
 Here is the comfusion matrix:
 
-|matrix predicted category|  EN | TH |   ZN|
+|predicted category|  EN | TH |   ZN|
 |---|---|---|---|           
 |EN   |      2049   |  1|0|
 |TH     |    1830  |  69|0|
@@ -208,12 +210,11 @@ Here is the comfusion matrix:
 
 To keep increasing the accuracy of the model, we added other convolution layer with 128 nodes and MaxPooling2D. This does increased the validation accuracy to 73.7% and decreased our parameter.
 
-confusion matrix (validation)
-predicted    EN   TH    ZN
-category                  
-EN         2049    0     1
-TH            3  524  1372
-ZN            7    0  1299
+|predicted category|  EN | TH |   ZN|
+|---|---|---|---|       
+|EN|         2049|    0|     1|
+|TH            |3  |524  |1372|
+|ZN|            7|    0|  1299|
 
 ### attempt 7
 
@@ -251,9 +252,9 @@ confusion matrix (validation)
 
 ### attempt 9
 
-Finally, we tried adding one more conv2d Layer since previous attempt shows that adding both the conv2d layer and dense layer result in super long training time.
+Finally, we tried adding one more conv2d Layer since previous attempt shows that adding both the conv2d layer and dense layer result in super long training time. We also increased the stride to 2 for the same reasons
 
-So for this attempt we finished the training in 12 minute got the validation score of 0.65. This was surprising because we thought the added complexity should have increased the validation accuracy.
+We finished the training in 12 minute got the validation score of 0.65. This was a little big surprising because we thought the added complexity should have increased the validation accuracy. This shows that the increase in stride have more influence in the validation accuracy than added layers.
 
 predicted    DA   EN
 |predicted category|  DA | EN |
@@ -261,9 +262,15 @@ predicted    DA   EN
 |DA |       1019  |  0|
 EN     |    1064  |986|
 
-From the graphing we can see that a lot of English images was recognized  as Danish. There were no distinct characteristic of those wrongly categorized images that can explain why this happens. This once gain prove the difficulty of separating English and Danish.
+From the graphing we can see that a lot of English images was recognized  as Danish. There were no distinct characteristic of those wrongly categorized images compare to those who is correctly categorized. This once gain prove the difficulty of separating English and Danish.
+
+![attempt9](./output/classification_results_attempt9.png)
 
 ## Conclusion
 
-So overall, we can see that separating EN and ZN images are fairy easy. This is mostly likely because Chinese is a hieroglyphic language and all of its characters resemble the shape of a square. This square-like feature distinguish itselves from language like English, which relies entirely on the 26 alphbetical letters
+So overall, we can see that separating EN and ZN images are fairy easy. This is mostly likely because Chinese is a hieroglyphic language and all of its characters resemble the shape of a square. This square-like feature distinguish its elves from language like English, which relies entirely on the 26 alphabetical letters. The highest validation accuracy we have reached is 0.999 with two hidden layers (1 Conv2D and 1 dense layer) in around 8 to 9 minutes of training time with 10 epochs.
 
+EN, ZN and TH are harder to distinguish compare to the just EN and ZN. This is partially due to the added complexity of trying to distinguish 3 language instead of 2, and because compare to the distinct contrast between EN and ZN, EN and TH is harder to distinguish. Although from the human perspective TH is obviously different from EN, their letter like symbols is similar to that of English in the network's perspective.
+For this set of data we reached maximum of 0.737 using 4 hidden layers: two Conv2D　layer, two dense layer. The training time for this around 24 minutes, which is an obvious increase from before. 
+
+Finally, EN and DA is also very hard to distinguish. This is because Danish is basically using the same alphabet as English. The maximum validation accuracy we got is 0.84 with two hidden layer(one Conv2d and one Dense) in around 13 minutes. Afterwards we  increase the hidden layers to 3 and increase the strides to 2, which resulted in a lower accuracy of 0.65.  This suggested that strides can have a higher influence on validation accuracy than number of layers.  
