@@ -1,21 +1,23 @@
-# findings
+# PS7 findings
 
-## preparing the environment
+By Anthony Zhang, Yixin Lyu, William Wang
 
-In order to get the best result, I decided to run the network training on my laptop. The specs of my laptop is:
+## Preparing the environment
+
+In order to get the best result, We decided to run the network training locally on one of our laptops. The specs of the laptop is:
 
 |hardware type| hardware name|
 |---|---|
 |CPU | 11 gen i7-11800H @ 2.3GHz|
 | GPU | Nvidia Geforce RTX 3070 laptop GPU|
 
-I decided to use docker. This is way i can skip the process of figuring out which different python packages I need to install.
+We decided to use docker to create the environment. This is way i can skip the process of figuring out which different python packages we need install/missed.
 
-I also allowed GPU processing, which will speed up the training process.
+We also allowed GPU processing, which will speed up the training process.
 
 ## Preparing the data
 
-to prepare the data, I first get extracted the data and put them in in here a file structure like this:
+to prepare the data, we first get extracted the data and put them in in here a file structure like this:
 
 ```
  PS7/
@@ -24,7 +26,7 @@ to prepare the data, I first get extracted the data and put them in in here a fi
         └── validate
 ```
 
-I then run a few commands to get a sense of what the data look like. This is the number from both the training data and the validation data.
+Then we run a few commands to get a sense of what the data look like. This is the number from both the training data and the validation data.
 ```
 find . -type f -name "*_EN-*" | wc -l
 find . -type f -name "*_DA-*" | wc -l
@@ -32,21 +34,21 @@ find . -type f -name "*_RU-*" | wc -l
 find . -type f -name "*_ZN-*" | wc -l
 find . -type f -name "*_TH-*" | wc -l
 ```
-Number of EN files: 10492
-Number of DA files: 5114
-Number of RU files: 8204
-Number of ZN files: 6702
-Number of TH files: 9324
+Number of EN files: 10492 <br/>
+Number of DA files: 5114<br/>
+Number of RU files: 8204<br/>
+Number of ZN files: 6702<br/>
+Number of TH files: 9324<br/>
 
 
-I then took a subset of a 1000 EN files and 1000 ZN files and backed up the rest in `train_big` and `validation_big` folder under the same directory for later use.
+We then took a subset of a 1000 EN files and 1000 ZN files and backed up the rest in `train_big` and `validation_big` folder under the same directory for later use.
 
 ```bash
 find . -type f -name "*_EN-*" | shuf -n 1000 | xargs -I {} cp {} ../train
 find . -type f -name "*_ZH-*" | shuf -n 1000 | xargs -I {} cp {} ../train
 ```
 
-Finally, I then applied the same logic to the validation dataset and copied 225 `EN` and 225 `ZN` images into the validation folder, along with 50 `DA` images. I choose the number 225, 225, and 50 because they add up to 500. I want to follow the 80:20 split, so when i have 2000 images as my training set, I will need 500 image for the validation set.
+Finally, we  applied the same logic to the validation dataset and copied 225 `EN` and 225 `ZN` images into the validation folder, along with 50 `DA` images. We choose the number 225, 225, and 50 because they add up to 500. We want to follow the 80:20 split rule. So when we have 2000 images as out training set, we will need 500 image for the validation set.
 
 ```bash
 find . -type f -name "*_EN-*" | shuf -n 225 | xargs -I {} cp {} ../validation
@@ -78,7 +80,7 @@ As the last part of our project, to visualize the comparisons we have derived, w
 
 ## Getting the code to work
 
-I then copy the `square-circle-cross` code from the lab and updated the code so that the script will map the training data based on the language:
+Based on the code we got in last week's lab, we researched and adjusted it. In comparison with the `square-circle-cross` code, the language data have more complex categories and relatively clear output. In that case, we adjusted it, and the script will map the training data based on the language:
 
 ```python
 trainingResults = pd.DataFrame({
@@ -88,7 +90,7 @@ trainingResults = pd.DataFrame({
 })
 ```
 
-I also applied the same logic in the later validation dataframe:
+We also applied the same logic in the later validation dataframe:
 
 ```python
 validationResults = pd.DataFrame({
@@ -99,13 +101,13 @@ validationResults = pd.DataFrame({
 })
 ```
 
-Finally, I changed the code defining image properties:
+Finally, we changed the code defining image properties:
 
 ```python
 targetWidth, targetHeight, channels = 256, 256, 1
 ```
 
-Afterward the code runs. From the 1000 EN and ZN images, I get a validation accuracy of 0.89. This is with a network of (64, 128, 128, 128), kernel size 3, stride 1, and 10 epochs.
+Afterward the code runs. From the 1000 EN and ZN images, we get a validation accuracy of 0.89. This is with a network of (64, 128, 128, 128), kernel size 3, stride 1, and 10 epochs.
 
 the confusion matrix:
 
@@ -118,10 +120,10 @@ predicted category |   EN  | ZN|
 
 ## Test language
 
-### attempt 1
+### Attempt 1
 Now let play with this network.
 
-The first thing that needs to be done is increase the sample size. Hence I will use 5000 image from each languages(EN, ZN) for training and 1000 images for each language for testing.
+The first thing that needs to be done is increase the sample size. Hence we will use 5000 image from each languages(EN, ZN) for training and 1000 images for each language for testing.
 
 So for the first attempt, we have a neural network of layer (64, 128, 128, 128), which in total uses 63072386 parameters and we trained the network for 10 epochs.
 
@@ -141,11 +143,11 @@ The first image on the top is the wrongly predicted images.
 
 So overall, this is a pretty accurate model. However, the the down side is that the training time is too long.
 
-### attempt 2
+### Attempt 2
 
-So for my second attempt, I want reduce the training time by reducing the layers from 4 to 2, which means i'll get rid of one Conv2d layer and one dense layer. 
+So for my second attempt, I want reduce the training time by reducing the layers from 4 to 2, which means we'll get rid of one Conv2d layer and one dense layer. 
 
-Surprisingly, doing this have increased my number of parameters from the previous 63072386 to 132130562. On a closer look however, this makes a lot of sense. By getting rid of the Conv2D layer, I also got rid of the pooling layer, which was responsible for reduces the number of parameters. So when those parameters hid the flattening layer, the total number of parameters increase.
+Surprisingly, doing this have increased my number of parameters from the previous 63072386 to 132130562. On a closer look however, this makes a lot of sense. By getting rid of the Conv2D layer, we also got rid of the pooling layer, which was responsible for reduces the number of parameters. Thus, the total number of parameters increases when such parameters mask the flattening layer.
 
 The second attempt took about 8.6 minutes and resulted in a validation accuracy of 0.999. The result confusion matrix is the following:
 
@@ -159,9 +161,9 @@ We can see that the frequency of wrong predict increased by 1, which is not so m
 
 ![attempt2](./output/classification_results_attempt2.png)
 
-We can also see that from the top two images, we still face a similar problem as last attempt, which is that the model effective seems to decrease when the image has a lot of white spaces. This problem seems to stem from the fact that most image do not have that much white space, so  there isn't a lot of data of this scenarios the model can get training from.
+Additionally, as the top two images demonstrate, we are still confronted with the same issue as the last attempt: a large amount of white space in the image appears to reduce the model's effectiveness. This issue appears to be caused by the fact that most images contain very little white space, which means the model doesn't have a lot of data to train on.
 
-### attempt 3
+### Attempt 3
 
 So in order to fix this problem, we will try and use the original training data set with all the EN images and ZN images. But in order to maintain our training time, we will increase the strides to 2.
 
@@ -179,9 +181,9 @@ The result produced a validation accuracy is 0.985 with a training time of rough
 This shows that it was not an equal trade between the increase in training sample and increase in strides. The quality of the model decreased with the increase of strides from 1 to 2.
 
 ## Adding more language.
-### attempt 4
+### Attempt 4
 
-So for attempt 4, we added one language - thai data to train our model. And we yielded 63% validation accuracy for three languages.
+So for attempt 4, we added one language - Thai data to train our model. And we yielded 63% validation accuracy for three languages.
 
 Here is the confusion matrix: 
 |matrix predicted category | EN | TH |   ZN|
@@ -194,11 +196,11 @@ Therefore, we found that as the complexity of the data increased from 2 types to
 
 ![attempt4](./output/classification_results_attempt4.png)
 
-### attempt 5
+### Attempt 5
 
-In order to increasing the accuracy of the model, we attempted to add a dense layer with 128 nodes. However, we found that the validation accuracy remains similar around 63.8%. We were wondering why adding a dense layer does not work. Our speculation was overfitting or diminishing returns.
+In order to increasing the accuracy of the model, we attempted to add a dense layer with 128 nodes. Nonetheless, we discovered that the validation accuracy stays at roughly 63.8%. We were perplexed as to why a dense layer cannot be added. Overfitting or declining returns was our conjecture.
 
-Here is the comfusion matrix:
+Here is the confusion matrix:
 
 |predicted category|  EN | TH |   ZN|
 |---|---|---|---|           
@@ -206,7 +208,7 @@ Here is the comfusion matrix:
 |TH     |    1830  |  69|0|
 |ZN |           3 | 1303|0|
 
-### attempt 6
+### Attempt 6
 
 To keep increasing the accuracy of the model, we added other convolution layer with 128 nodes and MaxPooling2D. This does increased the validation accuracy to 73.7% and decreased our parameter.
 
@@ -216,7 +218,7 @@ To keep increasing the accuracy of the model, we added other convolution layer w
 |TH            |3  |524  |1372|
 |ZN|            7|    0|  1299|
 
-### attempt 7
+### Attempt 7
 
 In order to keep simplifying the model, we would like to keep reducing the number of parameters. As a result, we decided to remove one Dense layer and replace it by a Average Pooling Layer. 
 
@@ -230,15 +232,15 @@ The number of parameters decrease significantly from 63073411 to 15821444. Howev
 
 ## EN vs DA
 
-Now we want to try to make the model differentiate between EN and DA
+Now we want to focus on making the model differentiate between EN and DA
 
-### attempt 8
+### Attempt 8
 
 Since we have the GPU, we decided to just continue with using all of the EN and DA images in the data set.
 
-From before we found out that we can get a somewhat decent validation score by just using two hidden layers, sp we decided to first try that with classifying EN and DA images.
+We choose to start with identifying EN and DA images after learning previously that utilizing only two hidden layers might get a relatively respectable validation score.
 
-So with this attempt, we ran the training  for about 13 minutes, which is relatively fast.
+So with this attempt, we ran the training for about 13 minutes, which is relatively fast.
 
 And we get the validation score of 0.84. This was lower when we tried the same method on classifying EN image to ZN.
 
@@ -250,13 +252,12 @@ confusion matrix (validation)
 |DA|         808|   211|
 |EN         |274  |1776|
 
-### attempt 9
+### Attempt 9
 
-Finally, we tried adding one more conv2d Layer since previous attempt shows that adding both the conv2d layer and dense layer result in super long training time. We also increased the stride to 2 for the same reasons
+Finally, we tried adding one more Conv2d Layer since previous attempt shows that adding both the Conv2d layer and dense layer result in super long training time. We also increased the stride to 2 for the same reasons
 
-We finished the training in 12 minute got the validation score of 0.65. This was a little big surprising because we thought the added complexity should have increased the validation accuracy. This shows that the increase in stride have more influence in the validation accuracy than added layers.
+We finished the training in 12 minute got the validation score of 0.65. This was a little big surprising because we thought the added complexity should have increased the validation accuracy. This shows that the increase in stride have more influence in the validation accuracy than added layers. By adding this layer, it facilitates the network's ability to more effectively gather the necessary characteristics required to discern between English and Danish in the text pictures.
 
-predicted    DA   EN
 |predicted category|  DA | EN |
 |---|---|---|          
 |DA |       1019  |  0|
@@ -273,4 +274,4 @@ So overall, we can see that separating EN and ZN images are fairy easy. This is 
 EN, ZN and TH are harder to distinguish compare to the just EN and ZN. This is partially due to the added complexity of trying to distinguish 3 language instead of 2, and because compare to the distinct contrast between EN and ZN, EN and TH is harder to distinguish. Although from the human perspective TH is obviously different from EN, their letter like symbols is similar to that of English in the network's perspective.
 For this set of data we reached maximum of 0.737 using 4 hidden layers: two Conv2D　layer, two dense layer. The training time for this around 24 minutes, which is an obvious increase from before. 
 
-Finally, EN and DA is also very hard to distinguish. This is because Danish is basically using the same alphabet as English. The maximum validation accuracy we got is 0.84 with two hidden layer(one Conv2d and one Dense) in around 13 minutes. Afterwards we  increase the hidden layers to 3 and increase the strides to 2, which resulted in a lower accuracy of 0.65.  This suggested that strides can have a higher influence on validation accuracy than number of layers.  
+Finally, EN and DA is also very hard to distinguish. This is due to the fact that Danish and English essentially utilize the same alphabet. With two hidden layers—one Conv2d and one Dense—we were able to achieve a maximum validation accuracy of 0.84 in about 13 minutes. After that, we increased the strides to two and the hidden layers to three, which led to a lower accuracy of 0.65.  This implied that the number of layers may not have as much of an impact on validation accuracy as expected.
