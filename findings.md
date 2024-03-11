@@ -165,7 +165,7 @@ Additionally, as the top two images demonstrate, we are still confronted with th
 
 ### Attempt 3
 
-So in order to fix this problem, we will try and use the original training data set with all the EN images and ZN images. But in order to maintain our training time, we will increase the strides to 2.
+So in order to fix this problem, we will try and use the original training data set with all the EN images and ZN images. 
 
 So this leave us with 8442 EN and 5396 ZN training images and a total parameter of 32515842.
 
@@ -246,8 +246,7 @@ And we get the validation score of 0.84. This was lower when we tried the same m
 
 The confusion matrix look like this:
 
-confusion matrix (validation)
-|matrix predicted category|  DA | EN |
+|predicted category|  DA | EN |
 |---|---|---|
 |DA|         808|   211|
 |EN         |274  |1776|
@@ -269,9 +268,25 @@ From the graphing we can see that a lot of English images was recognized  as Dan
 
 ## Conclusion
 
-So overall, we can see that separating EN and ZN images are fairy easy. This is mostly likely because Chinese is a hieroglyphic language and all of its characters resemble the shape of a square. This square-like feature distinguish its elves from language like English, which relies entirely on the 26 alphabetical letters. The highest validation accuracy we have reached is 0.999 with two hidden layers (1 Conv2D and 1 dense layer) in around 8 to 9 minutes of training time with 10 epochs.
+So overall, we can see that separating EN and ZN images are fairy easy. This is mostly likely because Chinese is a hieroglyphic language and all of its characters resemble the shape of a square. This square-like feature distinguish its elves from language like English, which relies entirely on the 26 alphabetical letters. The highest validation accuracy we have reached is 0.999 with two hidden layers (1 Conv2D and 1 dense layer) in around 8 to 9 minutes of training time with 10 epochs. However, this is with a limited data set. When we used the "full dataset", we reached a validation accuracy of 0.985. 
+
+|predicted category    |EN   |ZN|     
+|---|---|---|       
+|EN         |2001    |49|
+|ZN|            0|  1306|
 
 EN, ZN and TH are harder to distinguish compare to the just EN and ZN. This is partially due to the added complexity of trying to distinguish 3 language instead of 2, and because compare to the distinct contrast between EN and ZN, EN and TH is harder to distinguish. Although from the human perspective TH is obviously different from EN, their letter like symbols is similar to that of English in the network's perspective.
 For this set of data we reached maximum of 0.737 using 4 hidden layers: two Conv2D　layer, two dense layer. The training time for this around 24 minutes, which is an obvious increase from before. 
 
+|predicted category|  EN | TH |   ZN|
+|---|---|---|---|       
+|EN|         2049|    0|     1|
+|TH            |3  |524  |1372|
+|ZN|            7|    0|  1299|
+
 Finally, EN and DA is also very hard to distinguish. This is due to the fact that Danish and English essentially utilize the same alphabet. With two hidden layers—one Conv2d and one Dense—we were able to achieve a maximum validation accuracy of 0.84 in about 13 minutes. After that, we increased the strides to two and the hidden layers to three, which led to a lower accuracy of 0.65.  This implied that the number of layers may not have as much of an impact on validation accuracy as expected.
+
+|predicted category|  DA | EN |
+|---|---|---|
+|DA|         808|   211|
+|EN         |274  |1776|
